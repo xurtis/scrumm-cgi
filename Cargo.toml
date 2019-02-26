@@ -1,0 +1,12 @@
+[package]
+name = "scrumm-cgi"
+version = "0.1.0"
+authors = ["Curtis Millar <curtis@curtism.me>"]
+edition = "2018"
+description = "A CGI tool to manage scrumm-style issues in GitHub"
+
+[[bin]]
+name = "scrumm.cgi"
+path = "src/main.rs"
+
+[dependencies]
