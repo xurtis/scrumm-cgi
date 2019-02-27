@@ -1,5 +1,7 @@
 /// Environment describing a CGI request.
 
+mod template;
+
 use cgi::{Request, Response, handle, html_response, string_response};
 use cgi::http::StatusCode;
 use failure::Error;
@@ -16,28 +18,26 @@ fn main() {
 
 fn handle_request(request: Request) -> Result<Response, Error> {
     let response = html!(
-        head {
-            title : "Test page";
+        p {
+            b : "Url: ";
+            : format!("{:?}", request.uri());
         }
-        body {
-            p {
-                b : "Url: ";
-                : format!("{:?}", request.uri());
-            }
-            ul {
-                @for (key, val) in request.headers() {
-                    li {
-                        b {
-                            : key.to_string();
-                            : ": ";
-                        }
-                        : val.to_str();
+        ul {
+            @for (key, val) in request.headers() {
+                li {
+                    b {
+                        : key.to_string();
+                        : ": ";
                     }
+                    : val.to_str();
                 }
             }
         }
+        h1 : "Body";
+        pre : format!("{:#?}", request.body());
     );
-    Ok(html_response(StatusCode::OK, response.to_string()))
+
+    Ok(template::render_page(template::global_wrapper("Test page".to_owned(), response)))
 }
 
 fn handle_error(error: Error) -> Response {
